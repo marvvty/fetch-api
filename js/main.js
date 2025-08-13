@@ -105,10 +105,14 @@ class PhotoController {
   loadMoreCards() {
     const container = this.view.container;
     container.addEventListener("scroll", async () => {
-      const scrollTrigger =
-        (container.scrollTop + container.clientHeight) / container.scrollHeight;
+      const lastCard = container.querySelector(".card:last-child");
 
-      if (scrollTrigger >= 0.7) {
+      const threeCardsOffset = lastCard.offsetHeight * 3;
+
+      const scrollBottom = container.scrollTop + container.clientHeight;
+      const scrollTrigger = lastCard.offsetTop + lastCard.offsetHeight;
+
+      if (scrollBottom >= scrollTrigger - threeCardsOffset) {
         if (this.loading) return;
 
         this.loading = true;
