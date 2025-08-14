@@ -1,19 +1,48 @@
 class PhotoModel {
-  async getPhotos(limit = 10) {
+  async getCats(limit = 10) {
     const response = await fetch(
       `https://api.thecatapi.com/v1/images/search?limit=${limit}`
     );
 
     return response.json();
   }
+
+  async getDogs() {
+    const response = await fetch(
+      `https://api.thedogapi.com/v1/images/search?size=med&mime_types=jpg&format=json&has_breeds=true&order=RANDOM&page=0&limit=10`
+    );
+
+    return response.json();
+  }
+
+  async getAiCats() {}
 }
 
-class PhotoView {
+class Post {
+  constructor(id, userId, url, title) {
+    this.id = id;
+    this.userId = userId;
+    this.url = url;
+    this.title = title;
+  }
+  static fromJson(json) {
+    return new Post(json.id, json.userId, json.url, json.title);
+  }
+}
+
+class PostView {
   constructor(containerId) {
     this.container = document.getElementById(containerId);
   }
 
-  createPost(photos) {
+  createPosts(photos) {
+    this.container.innerHTML = "";
+    photos.forEach((json) => {
+      this.container.append(this.createCard(json));
+    });
+  }
+
+  appendPosts(photos) {
     photos.forEach((json) => {
       this.container.append(this.createCard(json));
     });
@@ -90,16 +119,35 @@ class PhotoView {
 class PhotoController {
   constructor() {
     this.model = new PhotoModel();
-    this.view = new PhotoView("card-container");
-
+    this.view = new PostView("card-container");
     this.loading = false;
+
+    this.catsBtn = document.getElementById("catsBtn");
+    this.dogsBtn = document.getElementById("dogsBtn");
   }
 
   async init() {
-    const photos = await this.model.getPhotos();
-    this.view.createPost(photos);
+    const photos = await this.model.getCats();
+    this.view.createPosts(photos);
 
     this.loadMoreCards();
+    this.addBtnListeners();
+  }
+
+  addBtnListeners() {
+    this.dogsBtn.addEventListener("click", async () => {
+      const getDogsPhotos = await this.model.getDogs();
+      this.view.createPosts(getDogsPhotos);
+      this.catsBtn.classList.remove("controller__btn--active");
+      this.dogsBtn.classList.add("controller__btn--active");
+    });
+
+    this.catsBtn.addEventListener("click", async () => {
+      const getCatsPhotos = await this.model.getCats();
+      this.view.createPosts(getCatsPhotos);
+      this.catsBtn.classList.add("controller__btn--active");
+      this.dogsBtn.classList.remove("controller__btn--active");
+    });
   }
 
   loadMoreCards() {
@@ -117,12 +165,31 @@ class PhotoController {
 
         this.loading = true;
 
-        const loadMorePosts = await this.model.getPhotos();
-        this.view.createPost(loadMorePosts);
+        const loadMorePosts = await this.selectPostsType();
+        this.view.appendPosts(loadMorePosts);
 
         this.loading = false;
       }
     });
+  }
+
+  isCatBtnContainClass() {
+    const isContain = this.catsBtn.classList.contains(
+      "controller__btn--active"
+    );
+    if (isContain) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  selectPostsType() {
+    if (this.isCatBtnContainClass()) {
+      return this.model.getCats();
+    } else {
+      return this.model.getDogs();
+    }
   }
 }
 

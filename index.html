@@ -3,7 +3,6 @@
   <head>
     <meta charset="UTF-8" />
     <title>Fetch</title>
-    <link rel="stylesheet" href="css/reset.css" />
     <link rel="stylesheet" href="css/main.css" />
     <link
       href="https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap"
@@ -11,6 +10,14 @@
     />
   </head>
   <body>
+    <header class="header">
+      <nav class="nav">
+        <div class="controller">
+          <button id="catsBtn" class="btn controller__btn--active">Cats</button>
+          <button id="dogsBtn" class="btn">Dogs</button>
+        </div>
+      </nav>
+    </header>
     <main class="main">
       <div class="container" id="card-container"></div>
     </main>

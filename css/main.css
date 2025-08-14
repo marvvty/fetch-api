@@ -1,9 +1,43 @@
+@import url(reset.css);
+
 :root {
   --primary-color: #1b1c57;
 }
 
 body {
   font-family: "Oswald", sans-serif;
+}
+
+.btn {
+  border-radius: 12px;
+  padding: 12px 18px;
+  background-color: #2a3236;
+  color: #ffffff;
+  cursor: pointer;
+  border: none;
+  font-family: "Oswald", sans-serif;
+  font-weight: 500;
+  font-size: 14px;
+  letter-spacing: 1px;
+}
+.btn:hover {
+  background-color: rgba(29, 35, 37, 0.438);
+}
+.header {
+  display: flex;
+  justify-content: end;
+  padding: 12px;
+  width: 1400px;
+}
+.controller {
+  display: flex;
+  gap: 18px;
+}
+.controller__btn--active {
+  background-color: #d93900;
+}
+.controller__btn--active:hover {
+  background-color: #d93900;
 }
 .main {
   padding-top: 20px;
